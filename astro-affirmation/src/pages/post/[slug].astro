@@ -1,0 +1,77 @@
+---
+import type { SanityDocument } from "@sanity/client";
+import { loadQuery } from "../../sanity/lib/load-query";
+import Layout from "../../layouts/Layout.astro";
+import PortableText from "../../components/PortableText.astro";
+
+export async function getStaticPaths() {
+  const { data: posts } = await loadQuery<SanityDocument[]>({
+    query: `*[_type == "post"]`,
+  });
+
+  return posts.map(({ slug }) => {
+    return {
+      params: {
+        slug: slug.current,
+      },
+    };
+  });
+}
+
+//const { params } = Astro; needed if we want to use the slug from the urls
+const dayNumber = String(new Date().getDate());
+
+const { data: post } = await loadQuery<{ title: string; body: any[] }>(
+  {
+    query: `*[_type == "post" && slug.current == $dayNumber][0]`,
+    params: { dayNumber },
+  }
+);
+---
+
+<Layout>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      font-family: "Segoe UI", Roboto, sans-serif;
+    }
+
+    .page-container {
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+      background: linear-gradient(160deg, #a8dadc, #457b9d, #1d3557);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      color: #f1faee;
+      max-width: 800px;
+      line-height: 1.4;
+      font-size: 2rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    @media (max-width: 600px) {
+      .content {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+
+  <div class="page-container">
+    <div class="content">
+      <h1>{post.title}</h1>
+      <PortableText portableText={post.body} />
+    </div>
+  </div>
+</Layout>
