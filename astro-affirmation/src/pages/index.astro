@@ -1,31 +1,20 @@
 ---
-import type { SanityDocument } from "@sanity/client";
-import { loadQuery } from "../sanity/lib/load-query";
 import Layout from "../layouts/Layout.astro";
-import PortableText from "../components/PortableText.astro";
 import background from "../assets/background.svg";
 
-export async function getStaticPaths() {
-  const { data: posts } = await loadQuery<SanityDocument[]>({
-    query: `*[_type == "post"]`,
-  });
-
-  return posts.map(({ slug }) => {
-    return {
-      params: {
-        slug: slug.current,
-      },
-    };
-  });
-}
-
-//const { params } = Astro; needed if we want to use the slug from the urls
 const dayNumber = String(new Date().getDate() - 1);
+const postImports = import.meta.glob("./posts/*.md");
+const postFilename = `./posts/${dayNumber}.md`;
 
-const { data: post } = await loadQuery<{ title: string; body: any[] }>({
-  query: `*[_type == "post" && slug.current == $dayNumber][0]`,
-  params: { dayNumber },
-});
+let post, frontmatter;
+if (postImports[postFilename]) {
+  const mod = await postImports[postFilename]() as any;
+  post = mod.default;
+  frontmatter = mod.frontmatter;
+} else {
+  post = null;
+  frontmatter = { title: "No post found:" + postFilename };
+}
 ---
 
 <Layout>
@@ -82,8 +71,8 @@ const { data: post } = await loadQuery<{ title: string; body: any[] }>({
   <div class="page-container">
     <div class="content">
       <img id="background" src={background.src} alt="" fetchpriority="high" />
-      <h1>{post.title}</h1>
-      <PortableText portableText={post.body} />
+      <h1>{frontmatter.title}</h1>
+      {post ? <post /> : <p>No post found for today.</p>}
     </div>
   </div>
 </Layout>
