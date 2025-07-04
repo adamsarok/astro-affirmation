@@ -2,39 +2,31 @@
 import Layout from "../layouts/Layout.astro";
 import background from "../assets/background.svg";
 
-// Import all markdown files in /posts
+
 const postImports = import.meta.glob("./posts/*.md");
 
-// Get the day number (same logic as before)
-const dayNumber = new Date().getDate() - 1;
+const allPostNumbers = Object.keys(postImports)
+  .map(filename => {
+    const match = filename.match(/\.\/posts\/(\d+)\.md$/);
+    return match ? parseInt(match[1]) : 0;
+  })
+  .filter(num => num > 0)
+  .sort((a, b) => a - b);
 
-// Find the maximum post number available
-const maxPostNumber = Math.max(
-  ...Object.keys(postImports)
-    .map(filename => {
-      const match = filename.match(/\.\/posts\/(\d+)\.md$/);
-      return match ? parseInt(match[1]) : 0;
-    })
-    .filter(num => num > 0)
+const allPosts = await Promise.all(
+  allPostNumbers.map(async (postNum) => {
+    const filename = `./posts/${postNum}.md`;
+    const mod = await postImports[filename]() as any;
+    return {
+      number: postNum,
+      title: mod.frontmatter.title,
+      content: mod.default,
+      frontmatter: mod.frontmatter
+    };
+  })
 );
 
-// Wrap around if day number exceeds max post number
-const adjustedDayNumber = dayNumber > maxPostNumber ? 
-  ((dayNumber - 1) % maxPostNumber) + 1 : 
-  dayNumber;
-
-// Build the filename for today
-const postFilename = `./posts/${adjustedDayNumber}.md`;
-
-let post, frontmatter;
-if (postImports[postFilename]) {
-  const mod = await postImports[postFilename]() as any;
-  post = mod.default;
-  frontmatter = mod.frontmatter;
-} else {
-  post = null;
-  frontmatter = { title: "No post found" };
-}
+const postsData = JSON.stringify(allPosts);
 ---
 
 <Layout>
@@ -86,13 +78,31 @@ if (postImports[postFilename]) {
         font-size: 1.5rem;
       }
     }
+
+    .loading {
+      opacity: 0.7;
+    }
   </style>
 
   <div class="page-container">
-    <div class="content">
+    <div class="content" id="content">
       <img id="background" src={background.src} alt="" fetchpriority="high" />
-      <h1>{frontmatter.title}</h1>
-      {post ? <post /> : <p>No post found for today.</p>}
+      <h1 id="title">Loading...</h1>
+      <div id="post-content" class="loading">Loading...</div>
     </div>
   </div>
+
+  <script define:vars={{ postsData }}>
+    const allPosts = JSON.parse(postsData);
+    
+    function showRandomPost() {
+      const randomIndex = Math.floor(Math.random() * allPosts.length);
+      const randomPost = allPosts[randomIndex];
+      
+      document.getElementById('title').textContent = randomPost.title;
+      document.getElementById('post-content').innerHTML = randomPost.content;
+    }
+    
+    showRandomPost();
+  </script>
 </Layout>
