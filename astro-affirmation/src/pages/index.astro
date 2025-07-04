@@ -2,9 +2,29 @@
 import Layout from "../layouts/Layout.astro";
 import background from "../assets/background.svg";
 
-const dayNumber = String(new Date().getDate() - 1);
+// Import all markdown files in /posts
 const postImports = import.meta.glob("./posts/*.md");
-const postFilename = `./posts/${dayNumber}.md`;
+
+// Get the day number (same logic as before)
+const dayNumber = new Date().getDate() - 1;
+
+// Find the maximum post number available
+const maxPostNumber = Math.max(
+  ...Object.keys(postImports)
+    .map(filename => {
+      const match = filename.match(/\.\/posts\/(\d+)\.md$/);
+      return match ? parseInt(match[1]) : 0;
+    })
+    .filter(num => num > 0)
+);
+
+// Wrap around if day number exceeds max post number
+const adjustedDayNumber = dayNumber > maxPostNumber ? 
+  ((dayNumber - 1) % maxPostNumber) + 1 : 
+  dayNumber;
+
+// Build the filename for today
+const postFilename = `./posts/${adjustedDayNumber}.md`;
 
 let post, frontmatter;
 if (postImports[postFilename]) {
@@ -13,7 +33,7 @@ if (postImports[postFilename]) {
   frontmatter = mod.frontmatter;
 } else {
   post = null;
-  frontmatter = { title: "No post found:" + postFilename };
+  frontmatter = { title: "No post found" };
 }
 ---
 
