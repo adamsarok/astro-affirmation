@@ -2,8 +2,64 @@
 import { getCollection } from 'astro:content';
 
 const posts = await getCollection('posts');
-const randomPost = posts[Math.floor(Math.random() * posts.length)];
-const randomSlug = randomPost.slug;
-
-return Astro.redirect(`/${randomSlug}`);
+const slugs = posts.map(post => post.slug);
 ---
+
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Átirányítás...</title>
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        font-family: "Segoe UI", Roboto, sans-serif;
+      }
+      .page-container {
+        position: relative;
+        min-height: 100vh;
+        overflow: hidden;
+        background: linear-gradient(160deg, #a8dadc, #457b9d, #1d3557);
+        opacity: 0.6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem;
+      }
+      .spinner {
+        border: 6px solid #f3f3f3;
+        border-top: 6px solid #457b9d;
+        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        animation: spin 1s linear infinite;
+        margin: auto;
+      }
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      .redirect-msg {
+        color: #f1faee;
+        font-size: 1.2rem;
+        margin-top: 1.5rem;
+      }
+    </style>
+    <script define:vars={{ slugs }}>
+      const randomSlug = slugs[Math.floor(Math.random() * slugs.length)];
+      window.location.replace('/' + randomSlug);
+    </script>
+  </head>
+  <body>
+    <div class="page-container">
+      <div>
+        <div class="spinner"></div>
+        <div class="redirect-msg">Átirányítás...</div>
+      </div>
+    </div>
+  </body>
+</html>
