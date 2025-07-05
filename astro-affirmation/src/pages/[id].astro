@@ -8,13 +8,13 @@ export async function getStaticPaths() {
 
   return posts.map(post => ({
     params: { id: post.slug },
-    props: { post }
+    props: { post, postsCount: posts.length }
   }));
 }
 
-const { post } = Astro.props;
+const { post, postsCount } = Astro.props;
 ---
 
 <Layout>
-  <PostDisplay post={post} />
+  <PostDisplay post={post} postsCount={postsCount}/>
 </Layout> 
