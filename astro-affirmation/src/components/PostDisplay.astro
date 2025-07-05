@@ -9,15 +9,14 @@ interface Props {
 const { post, postsCount } = Astro.props;
 const current = Number(post.slug);
 const next = isNaN(current) ? 1 : current + 1 > postsCount ? 1 : current + 1;
-
 ---
 
 <div class="page-container">
   <div class="content" id="content">
     <img id="background" src={background.src} alt="" fetchpriority="high" />
     <h1 id="title">{post.data.title}</h1>
-    <div id="post-content" set:html={post.rendered.html}></div>
-    <div style="display: flex; justify-content: center; margin-top: 2rem;">
+    <div id="post-content" set:html={post.rendered.html} />
+    <div class="button-row">
       <a href={`/${next}`}><button class="button-blue">Következő</button></a>
     </div>
   </div>
@@ -40,7 +39,7 @@ const next = isNaN(current) ? 1 : current + 1 > postsCount ? 1 : current + 1;
     background: linear-gradient(160deg, #a8dadc, #457b9d, #1d3557);
     opacity: 0.6;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     text-align: center;
     padding: 2rem;
@@ -55,6 +54,28 @@ const next = isNaN(current) ? 1 : current + 1 > postsCount ? 1 : current + 1;
     font-size: 2rem;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     opacity: 0.9;
+    display: flex;
+    flex-direction: column;
+    min-height: 60vh;
+    align-items: stretch;
+    justify-content: flex-start;
+  }
+
+  #post-content {
+    flex: 1;
+  }
+
+  .button-row {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100vw;
+    background: rgba(29, 53, 87, 0.85);
+    padding: 1rem 0 1.2rem 0;
+    margin: 0;
+    z-index: 10;
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.12);
+    border-radius: 0;
   }
 
   #background {
@@ -69,7 +90,7 @@ const next = isNaN(current) ? 1 : current + 1 > postsCount ? 1 : current + 1;
 
   .button-blue {
     display: inline-block;
-    background-color: #8BA1BA;
+    background-color: #8ba1ba;
     color: white;
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
@@ -77,13 +98,15 @@ const next = isNaN(current) ? 1 : current + 1 > postsCount ? 1 : current + 1;
     border: none;
     border-radius: 9999px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.1s ease;
+    transition:
+      background-color 0.3s ease,
+      transform 0.1s ease;
     text-align: center;
     text-decoration: none;
   }
 
   .button-blue:hover {
-    background-color: #2563EB;
+    background-color: #2563eb;
   }
 
   .button-blue:active {
@@ -99,5 +122,18 @@ const next = isNaN(current) ? 1 : current + 1 > postsCount ? 1 : current + 1;
     .content {
       font-size: 1.5rem;
     }
+    .button-row {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100vw;
+      background: rgba(29, 53, 87, 0.85);
+      padding: 1rem 0 1.2rem 0;
+      margin: 0;
+      z-index: 10;
+      box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.12);
+      border-radius: 0;
+    }
   }
-</style> 
+</style>
+
