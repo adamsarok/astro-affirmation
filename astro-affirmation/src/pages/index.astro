@@ -1,12 +1,9 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import PostDisplay from "../components/PostDisplay.astro";
 import { getCollection } from 'astro:content';
 
 const posts = await getCollection('posts');
+const randomPost = posts[Math.floor(Math.random() * posts.length)];
+const randomSlug = randomPost.slug;
 
+return Astro.redirect(`/${randomSlug}`);
 ---
-
-<Layout>
-  <PostDisplay posts={posts} />
-</Layout>

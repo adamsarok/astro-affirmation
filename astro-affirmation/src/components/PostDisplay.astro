@@ -2,11 +2,10 @@
 import background from "../assets/background.svg";
 
 interface Props {
-  posts: any[];
-  slug?: string;
+  post: any;
 }
 
-const { posts, slug } = Astro.props;
+const { post } = Astro.props;
 
 ---
 
@@ -71,11 +70,8 @@ const { posts, slug } = Astro.props;
 </style>
 
 {(
-  <script define:vars={{ posts, slug }}>
+  <script define:vars={{ post }}>
     function showPost() {
-      const index = slug ? slug : Math.floor(Math.random() * posts.length);
-      const post = posts.find(post => post.slug === index.toString());
-
       document.getElementById('title').textContent = post.data.title;
       document.getElementById('post-content').innerHTML = post.rendered.html;
     }
