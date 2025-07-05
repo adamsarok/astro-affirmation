@@ -1,0 +1,20 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PostDisplay from "../components/PostDisplay.astro";
+import { loadAllPosts } from "../utils/posts";
+
+export async function getStaticPaths() {
+  const allPosts = await loadAllPosts();
+
+  return allPosts.map(post => ({
+    params: { id: post.number.toString() },
+    props: { post, allPosts }
+  }));
+}
+
+const { post, allPosts } = Astro.props;
+---
+
+<Layout>
+  <PostDisplay posts={allPosts} specificPost={post.number} />
+</Layout> 

@@ -1,0 +1,90 @@
+---
+import background from "../assets/background.svg";
+
+interface Props {
+  posts: any[];
+  specificPost?: number;
+}
+
+const { posts, specificPost } = Astro.props;
+
+---
+
+<div class="page-container">
+  <div class="content" id="content">
+    <img id="background" src={background.src} alt="" fetchpriority="high" />
+    <h1 id="title">Loading...</h1>
+    <div id="post-content" class="loading">Loading...</div>
+  </div>
+</div>
+
+<style>
+  body,
+  html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    font-family: "Segoe UI", Roboto, sans-serif;
+  }
+
+  .page-container {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(160deg, #a8dadc, #457b9d, #1d3557);
+    opacity: 0.6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .content {
+    position: relative;
+    z-index: 1;
+    color: #f1faee;
+    max-width: 800px;
+    line-height: 1.4;
+    font-size: 2rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  #background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    filter: blur(100px);
+  }
+
+  @media (max-width: 600px) {
+    .content {
+      font-size: 1.5rem;
+    }
+  }
+
+  .loading {
+    opacity: 0.7;
+  }
+</style>
+
+{(
+  <script define:vars={{ posts, specificPost }}>
+    function showPost() {
+
+      const index = specificPost ? specificPost : Math.floor(Math.random() * posts.length);
+      const post = posts[index];
+
+      console.log(post);
+      
+      document.getElementById('title').textContent = post.title;
+      document.getElementById('post-content').innerHTML = post.content;
+    }
+    
+    showPost();
+  </script>
+)} 
