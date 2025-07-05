@@ -15,8 +15,8 @@ const next = isNaN(current) ? 1 : current + 1 > postsCount ? 1 : current + 1;
 <div class="page-container">
   <div class="content" id="content">
     <img id="background" src={background.src} alt="" fetchpriority="high" />
-    <h1 id="title">Loading...</h1>
-    <div id="post-content" class="loading">Loading...</div>
+    <h1 id="title">{post.data.title}</h1>
+    <div id="post-content" set:html={post.rendered.html}></div>
     <div style="display: flex; justify-content: center; margin-top: 2rem;">
       <a href={`/${next}`}><button class="button-blue">Következő</button></a>
     </div>
@@ -68,48 +68,36 @@ const next = isNaN(current) ? 1 : current + 1 > postsCount ? 1 : current + 1;
   }
 
   .button-blue {
-  display: inline-block;
-  background-color: #8BA1BA; /* Tailwind's blue-500 */
-  color: white;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 500;
-  border: none;
-  border-radius: 9999px; /* fully rounded pill */
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.1s ease;
-  text-align: center;
-  text-decoration: none;
-}
+    display: inline-block;
+    background-color: #8BA1BA;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    text-align: center;
+    text-decoration: none;
+  }
 
-.button-blue:hover {
-  background-color: #2563EB; /* Tailwind's blue-600 */
-}
+  .button-blue:hover {
+    background-color: #2563EB;
+  }
 
-.button-blue:active {
-  transform: scale(0.98);
-}
+  .button-blue:active {
+    transform: scale(0.98);
+  }
 
-.button-blue:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4); /* subtle blue focus ring */
-}
+  .button-blue:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
+  }
 
   @media (max-width: 600px) {
     .content {
       font-size: 1.5rem;
     }
   }
-
-</style>
-
-{(
-  <script define:vars={{ post }}>
-    function showPost() {
-      document.getElementById('title').textContent = post.data.title;
-      document.getElementById('post-content').innerHTML = post.rendered.html;
-    }
-    
-    showPost();
-  </script>
-)} 
+</style> 
