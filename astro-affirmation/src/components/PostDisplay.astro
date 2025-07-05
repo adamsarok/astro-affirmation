@@ -49,6 +49,7 @@ const { posts, slug } = Astro.props;
     line-height: 1.4;
     font-size: 2rem;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    opacity: 0.9;
   }
 
   #background {
@@ -67,24 +68,16 @@ const { posts, slug } = Astro.props;
     }
   }
 
-  .loading {
-    opacity: 0.7;
-  }
 </style>
 
 {(
   <script define:vars={{ posts, slug }}>
     function showPost() {
-
       const index = slug ? slug : Math.floor(Math.random() * posts.length);
       const post = posts.find(post => post.slug === index.toString());
 
-      console.log(index);
-      console.log(post);
-      console.log(posts);
-      
-      document.getElementById('title').textContent = post.title;
-      document.getElementById('post-content').innerHTML = post.data.rendered;
+      document.getElementById('title').textContent = post.data.title;
+      document.getElementById('post-content').innerHTML = post.rendered.html;
     }
     
     showPost();
