@@ -9,14 +9,16 @@ interface Props {
 const { post, postsCount } = Astro.props;
 const current = Number(post.slug);
 const next = isNaN(current) ? 1 : current + 1 > postsCount ? 1 : current + 1;
+const previous = isNaN(current) ? postsCount : current - 1 < 1 ? postsCount : current - 1;
 ---
 
 <div class="page-container">
   <div class="content" id="content">
     <img id="background" src={background.src} alt="" fetchpriority="high" />
-    <h1 id="title">{post.data.title}</h1>
+    <h1 id="title">{post.slug}. {post.data.title}</h1>
     <div id="post-content" set:html={post.rendered.html} />
     <div class="button-row">
+      <a href={`/${previous}`}><button class="button-blue">Előző</button></a>
       <a href={`/${next}`}><button class="button-blue">Következő</button></a>
     </div>
   </div>
