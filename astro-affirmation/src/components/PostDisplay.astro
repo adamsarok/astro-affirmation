@@ -1,5 +1,8 @@
 ---
 import background from "../assets/background.svg";
+import MoveLeft from '@lucide/astro/icons/move-left';
+import MoveRight from '@lucide/astro/icons/move-right';
+import Dices from '@lucide/astro/icons/dices';
 
 interface Props {
   post: any;
@@ -18,11 +21,27 @@ const previous = isNaN(current) ? postsCount : current - 1 < 1 ? postsCount : cu
     <h1 id="title">{post.slug}. {post.data.title}</h1>
     <div id="post-content" set:html={post.rendered.html} />
     <div class="button-row">
-      <a href={`/${previous}`}><button class="button-blue">Előző</button></a>
-      <a href={`/${next}`}><button class="button-blue">Következő</button></a>
+      <a href={`/${previous}`}><button class="button-blue"><MoveLeft class="icon" /></button></a>
+      <a id="random-btn"><button class="button-blue"><Dices class="icon" /></button></a>
+      <a href={`/${next}`}><button class="button-blue"><MoveRight class="icon" /></button></a>
     </div>
   </div>
 </div>
+
+<script define:vars={{ next, previous, postsCount }}>
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowRight') {
+      window.location.href = `/${next}`;
+    } else if (event.key === 'ArrowLeft') {
+      window.location.href = `/${previous}`;
+    }
+  });
+  document.getElementById('random-btn').addEventListener('click', (event) => {
+    event.preventDefault();
+    const randomSlug = Math.floor(Math.random() * postsCount) + 1;
+    window.location.href = `/${randomSlug}`;
+  });
+</script>
 
 <style>
   body,
@@ -45,6 +64,10 @@ const previous = isNaN(current) ? postsCount : current - 1 < 1 ? postsCount : cu
     justify-content: center;
     text-align: center;
     padding: 2rem;
+  }
+
+  .button-blue {
+    margin-right: 1rem;
   }
 
   .content {
