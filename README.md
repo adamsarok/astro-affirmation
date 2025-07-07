@@ -1,4 +1,4 @@
-Daily affirmations/exercises site created in Astro.
+Daily affirmations site created in Astro.
 
 `cd astro-affirmation`   
 
